@@ -1,0 +1,5 @@
+dotenv
+requests
+matplotlib
+tensorflow
+keras
