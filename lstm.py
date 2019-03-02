@@ -48,7 +48,7 @@ def times_to_vectors(times):
 
 
 def get_frames(vectors, seq_len):
-    return [vectors[i:seq_len+i+1] for i in range(len(vectors) - seq_len+1)]
+    return [vectors[i:seq_len+i+1] for i in range(len(vectors) - (seq_len+1))]
 
 
 def normalize_frames(frames):
@@ -68,12 +68,12 @@ def seperate_xy(frames):
 
 
 def partition_data(frames, partition_coefficient=0.8):
-    split_at = int(partition_coefficient * len(frames))
+    split_at = int(partition_coefficient * (len(frames)-1))
 
     train = frames[:split_at]
     test = frames[split_at:]
 
-    random.shuffle(test)
+    random.shuffle(train)
 
     return train, test
 
@@ -88,7 +88,6 @@ def frames_to_np_array(frames):
 
 
 def predict_sequences_multiple(model, frames):
-    # return [model.predict(np.reshape(frame, (dim_size, frame_size, 1)))[0,0] for frame in data]
     return [model.predict(frames_to_np_array([frame]))[0] for frame in frames]
 
 
