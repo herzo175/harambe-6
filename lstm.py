@@ -6,6 +6,7 @@ import requests
 import numpy as np
 import matplotlib.pyplot as plt
 
+from datetime import datetime
 from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
@@ -43,12 +44,28 @@ def get_alphavantage(function, rootkey, attributes=[], filters=[], apikey=config
         return times
 
 
-def times_to_vectors(times):
-    return [[times[time][col] for col in times[time]] for time in times]
+def times_to_vectors(times, include_time=False):
+    def get_col(time, col):
+        val = times[time][col]
+
+        if include_time:
+            if len(time) > 10:
+                ptime = datetime.strptime(time, "%Y-%m-%d %H:%M")
+            else:
+                ptime = datetime.strptime(time, "%Y-%m-%d")
+
+            return (ptime, val)
+        else:
+            return val
+
+    return [[get_col(time, col) for col in times[time]] for time in times]
 
 
-def get_frames(vectors, seq_len):
-    return [vectors[i:seq_len+i+1] for i in range(len(vectors) - (seq_len+1))]
+def get_frames(vectors, seq_len, with_target=False):
+    return [
+        vectors[i:seq_len+i+(1 if with_target else 0)]
+        for i in range(len(vectors) - (seq_len+(1 if with_target else 0)))
+    ]
 
 
 def normalize_frames(frames):
@@ -67,11 +84,11 @@ def seperate_xy(frames):
     return [frame[:-1] for frame in frames], [frame[-1] for frame in frames]
 
 
-def partition_data(frames, partition_coefficient=0.8):
-    split_at = int(partition_coefficient * (len(frames)-1))
+def partition_data(data_list, partition_coefficient=0.8):
+    split_at = int(partition_coefficient * (len(data_list)-1))
 
-    train = frames[:split_at]
-    test = frames[split_at:]
+    train = data_list[:split_at]
+    test = data_list[split_at:]
 
     random.shuffle(train)
 
