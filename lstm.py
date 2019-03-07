@@ -147,11 +147,11 @@ def setup_lstm_model(x_train, y_train):
     return model
 
 
-def plot_results_multiple(predicted_data, frames_with_targets):
+def plot_results_multiple(predicted_data, frames):
     fig = plt.figure(facecolor='white')
     ax = fig.add_subplot(111)
 
-    targets = [float(frame[0][0]) for frame in frames_with_targets]
+    targets = [float(frame[0][0]) for frame in frames]
     denormalized_predictions = [
         denormalize_dim(prediction[0], targets[i])
         for i, prediction in enumerate(predicted_data)
