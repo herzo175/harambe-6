@@ -79,6 +79,10 @@ def normalize_frame(frame):
     ]
 
 
+def denormalize_dim(dim, first_dim):
+    return (float(dim)+1) * float(first_dim)
+
+
 def seperate_xy(frames):
     # x (input set), y (output)
     return [frame[:-1] for frame in frames], [frame[-1] for frame in frames]
@@ -143,20 +147,24 @@ def setup_lstm_model(x_train, y_train):
     return model
 
 
-def plot_results_multiple(predicted_data, true_data):
+def plot_results_multiple(predicted_data, frames_with_targets):
     fig = plt.figure(facecolor='white')
     ax = fig.add_subplot(111)
+
+    targets = [float(frame[0][0]) for frame in frames_with_targets]
+    denormalized_predictions = [
+        denormalize_dim(prediction[0], targets[i])
+        for i, prediction in enumerate(predicted_data)
+    ]
+
+    ax.plot(targets, label="Actual")
+
     plt.plot(
-        np.reshape(predicted_data, (len(predicted_data))),
+        denormalized_predictions,
         label="Predicted",
         linestyle="dashed"
     )
-    ax.plot(np.reshape(true_data, (len(true_data))), label="Actual")
-    # #Pad the list of predictions to shift it in the graph to it's correct start
-    # for i, data in enumerate(predicted_data):
-    #     padding = [None for p in range(i * prediction_len)]
-    #     plt.plot(padding + data, label='Prediction')
-    #     plt.legend()
+
     plt.show()
 
 
