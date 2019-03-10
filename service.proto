@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+service Predictor {
+    // Sends a greeting
+    rpc Predict (PredictionRequest) returns (PredictionReply) {}
+}
+
+// The request message containing the user's name.
+// TODO: optional specify time frame for prediction vector
+message PredictionRequest {
+    string symbol = 1;
+    int32 trend_length = 2;
+}
+
+// The response message containing the greetings
+message PredictionReply {
+    double val = 1;
+    double val_denorm = 2;
+}
