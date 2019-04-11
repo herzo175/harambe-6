@@ -16,8 +16,8 @@ def run_grpc():
 
 
 def run_server():
-    url = "http://localhost:50051/predict"
-    # url = "https://harambe-6-i4ox34kasa-uc.a.run.app/predict"
+    # url = "http://localhost:50051/predict"
+    url = "https://harambe-6-i4ox34kasa-uc.a.run.app/predict"
     # response = requests.post(url, json={"symbol": "MSFT", "trend_start_date": "2019-03-10", "trend_end_date": "2019-03-15"})
     response = requests.post(url, json={"symbol": "MSFT", "trend_length": 15})
     print(response.json())

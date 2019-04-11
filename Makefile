@@ -36,7 +36,7 @@ deploy:
 	# kubectl expose deployment $(NAME) --type=LoadBalancer --port 50051 --target-port 50051
 	# kubectl get service
 	# gcloud app deploy --version $(GIT_TAG)
-	gcloud endpoints services deploy api_descriptor.pb api_config.yaml
+	# gcloud endpoints services deploy api_descriptor.pb api_config.yaml # NOTE: re-enable for grpc when endpoints is available on cloud run
 	gcloud beta run deploy --image gcr.io/$(PROJECT_ID)/$(NAME):$(GIT_TAG) --memory 512Mi
 
 upload_secrets:

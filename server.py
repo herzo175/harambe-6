@@ -12,7 +12,7 @@ server = Flask(__name__)
 
 @server.route("/predict", methods=["POST"])
 def predict():
-    body = request.get_json()
+    body = request.get_json(force=True)
 
     print(f"body: {body}")
 
