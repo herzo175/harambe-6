@@ -1,53 +1,45 @@
 import grpc
 from concurrent import futures
+from datetime import datetime
 import time
 import logging
+import sys
+import os
 
 import service_pb2
 import service_pb2_grpc
 import lstm
+import app
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 
 class Predictor(service_pb2_grpc.PredictorServicer):
-    def _get_frames(self, symbol, trend_length):
-        # NOTE: filters configurable?
-        times = lstm.get_time_series_daily(symbol, filters=["1. open"], outputsize="full")
-        vectors = lstm.times_to_vectors(times)[::-1]
-        return lstm.get_frames(vectors, seq_len=trend_length, with_target=True)
-
-
-    def _get_trained_model(self, frames):
-        train_x, train_y = lstm.seperate_xy(lstm.normalize_frames(frames))
-        return lstm.setup_lstm_model(train_x, train_y)
-
-
-    def _predict_frame(self, model, frame):
-        return lstm.predict_sequences_multiple(model, [frame])
-
-
     def Predict(self, request, context):
         symbol = request.symbol
         trend_length = request.trend_length
-        print(f"RECEIVED: symbol: {symbol}, trend length: {trend_length}")
+        trend_start_date = request.trend_start_date
+        trend_end_date = request.trend_end_date
 
-        # TODO: cache predictions
-        frames = self._get_frames(symbol, trend_length)
-        model = self._get_trained_model(frames)
-        last_frame = frames[-1][1:]
-        prediction = self._predict_frame(model, lstm.normalize_frame(last_frame))
+        print(
+            f"RECEIVED: symbol: {symbol}, trend length: {trend_length},"
+            f"start: {trend_start_date}, end: {trend_end_date}"
+        )
 
-        prediction_val = prediction[0][0]
-        prediction_val_denorm = lstm.denormalize_dim(prediction_val, last_frame[0][0])
+        try:
+            prediction_val, prediction_val_denorm = app.predict(symbol, trend_length, trend_start_date, trend_end_date)
+            return service_pb2.PredictionReply(val=prediction_val, val_denorm=prediction_val_denorm)
+        except ValueError as e:
+            context.set_details(str(e))
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            return service_pb2.PredictionReply()
 
-        return service_pb2.PredictionReply(val=prediction_val, val_denorm=prediction_val_denorm)
 
-
-def serve():
+def serve(port):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     service_pb2_grpc.add_PredictorServicer_to_server(Predictor(), server)
-    server.add_insecure_port('[::]:50051')
+    print(f"starting on port {port}")
+    server.add_insecure_port(f'[::]:{port}')
     server.start()
     try:
         while True:
@@ -58,5 +50,6 @@ def serve():
 
 
 if __name__ == '__main__':
+    port = os.getenv("PORT", sys.argv[1])
     logging.basicConfig()
-    serve()
+    serve(port)

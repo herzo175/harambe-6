@@ -1,12 +1,9 @@
 import time
 import random
+from datetime import datetime
 
 import requests
-
 import numpy as np
-import matplotlib.pyplot as plt
-
-from datetime import datetime
 from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
@@ -14,7 +11,7 @@ from keras.models import Sequential
 import config
 
 
-def get_time_series_daily(symbol, filters=[], outputsize="", apikey=config.ALPHAVANTAGE_API_KEY):
+def get_time_series_daily(symbol, filters=[], outputsize="", apikey=config.get_alphavantage_api_key()):
     return get_alphavantage(
         "TIME_SERIES_DAILY",
         "Time Series (Daily)",
@@ -32,7 +29,7 @@ def get_vwap(symbol, interval="15min"):
     )
 
 
-def get_alphavantage(function, rootkey, attributes=[], filters=[], apikey=config.ALPHAVANTAGE_API_KEY):
+def get_alphavantage(function, rootkey, attributes=[], filters=[], apikey=config.get_alphavantage_api_key()):
     url = f"https://www.alphavantage.co/query?function={function}&{'&'.join(attributes)}&apikey={apikey}"
     data = requests.get(url).json()
 
@@ -145,27 +142,6 @@ def setup_lstm_model(x_train, y_train):
         validation_split=0.05)
 
     return model
-
-
-def plot_results_multiple(predicted_data, frames):
-    fig = plt.figure(facecolor='white')
-    ax = fig.add_subplot(111)
-
-    targets = [float(frame[0][0]) for frame in frames]
-    denormalized_predictions = [
-        denormalize_dim(prediction[0], targets[i])
-        for i, prediction in enumerate(predicted_data)
-    ]
-
-    ax.plot(targets, label="Actual")
-
-    plt.plot(
-        denormalized_predictions,
-        label="Predicted",
-        linestyle="dashed"
-    )
-
-    plt.show()
 
 
 def zip_times(datasets):

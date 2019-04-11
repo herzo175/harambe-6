@@ -1,0 +1,22 @@
+type: google.api.Service
+config_version: 3
+
+#
+# Name of the service configuration.
+#
+name: harambe-6.endpoints.harambe-6.cloud.goog
+
+#
+# API title to appear in the user interface (Google Cloud Console).
+#
+title: harambe-6 gRPC API
+apis:
+- name: endpoints.harambe_6.Predictor
+
+#
+# API usage restrictions.
+#
+usage:
+  rules:
+  - selector: endpoints.harambe_6.Predictor.Predict
+    allow_unregistered_calls: true

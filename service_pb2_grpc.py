@@ -15,7 +15,7 @@ class PredictorStub(object):
       channel: A grpc.Channel.
     """
     self.Predict = channel.unary_unary(
-        '/Predictor/Predict',
+        '/endpoints.harambe_6.Predictor/Predict',
         request_serializer=service__pb2.PredictionRequest.SerializeToString,
         response_deserializer=service__pb2.PredictionReply.FromString,
         )
@@ -42,5 +42,5 @@ def add_PredictorServicer_to_server(servicer, server):
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'Predictor', rpc_method_handlers)
+      'endpoints.harambe_6.Predictor', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))

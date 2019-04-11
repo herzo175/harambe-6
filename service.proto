@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package endpoints.harambe_6;
+
 service Predictor {
     // Sends a greeting
     rpc Predict (PredictionRequest) returns (PredictionReply) {}
@@ -7,9 +9,12 @@ service Predictor {
 
 // The request message containing the user's name.
 // TODO: optional specify time frame for prediction vector
+// TODO: makefile for compiling
 message PredictionRequest {
     string symbol = 1;
     int32 trend_length = 2;
+    string trend_start_date = 3; // Dates specified in yyyy-mm-dd format
+    string trend_end_date = 4;
 }
 
 // The response message containing the greetings

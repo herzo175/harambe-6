@@ -16,10 +16,10 @@ _sym_db = _symbol_database.Default()
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='service.proto',
-  package='',
+  package='endpoints.harambe_6',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\rservice.proto\"9\n\x11PredictionRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x14\n\x0ctrend_length\x18\x02 \x01(\x05\"2\n\x0fPredictionReply\x12\x0b\n\x03val\x18\x01 \x01(\x01\x12\x12\n\nval_denorm\x18\x02 \x01(\x01\x32>\n\tPredictor\x12\x31\n\x07Predict\x12\x12.PredictionRequest\x1a\x10.PredictionReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\rservice.proto\x12\x13\x65ndpoints.harambe_6\"k\n\x11PredictionRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x14\n\x0ctrend_length\x18\x02 \x01(\x05\x12\x18\n\x10trend_start_date\x18\x03 \x01(\t\x12\x16\n\x0etrend_end_date\x18\x04 \x01(\t\"2\n\x0fPredictionReply\x12\x0b\n\x03val\x18\x01 \x01(\x01\x12\x12\n\nval_denorm\x18\x02 \x01(\x01\x32\x66\n\tPredictor\x12Y\n\x07Predict\x12&.endpoints.harambe_6.PredictionRequest\x1a$.endpoints.harambe_6.PredictionReply\"\x00\x62\x06proto3')
 )
 
 
@@ -27,22 +27,36 @@ DESCRIPTOR = _descriptor.FileDescriptor(
 
 _PREDICTIONREQUEST = _descriptor.Descriptor(
   name='PredictionRequest',
-  full_name='PredictionRequest',
+  full_name='endpoints.harambe_6.PredictionRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='symbol', full_name='PredictionRequest.symbol', index=0,
+      name='symbol', full_name='endpoints.harambe_6.PredictionRequest.symbol', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='trend_length', full_name='PredictionRequest.trend_length', index=1,
+      name='trend_length', full_name='endpoints.harambe_6.PredictionRequest.trend_length', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='trend_start_date', full_name='endpoints.harambe_6.PredictionRequest.trend_start_date', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='trend_end_date', full_name='endpoints.harambe_6.PredictionRequest.trend_end_date', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -58,27 +72,27 @@ _PREDICTIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17,
-  serialized_end=74,
+  serialized_start=38,
+  serialized_end=145,
 )
 
 
 _PREDICTIONREPLY = _descriptor.Descriptor(
   name='PredictionReply',
-  full_name='PredictionReply',
+  full_name='endpoints.harambe_6.PredictionReply',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='val', full_name='PredictionReply.val', index=0,
+      name='val', full_name='endpoints.harambe_6.PredictionReply.val', index=0,
       number=1, type=1, cpp_type=5, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='val_denorm', full_name='PredictionReply.val_denorm', index=1,
+      name='val_denorm', full_name='endpoints.harambe_6.PredictionReply.val_denorm', index=1,
       number=2, type=1, cpp_type=5, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
@@ -96,8 +110,8 @@ _PREDICTIONREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=76,
-  serialized_end=126,
+  serialized_start=147,
+  serialized_end=197,
 )
 
 DESCRIPTOR.message_types_by_name['PredictionRequest'] = _PREDICTIONREQUEST
@@ -107,14 +121,14 @@ _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 PredictionRequest = _reflection.GeneratedProtocolMessageType('PredictionRequest', (_message.Message,), dict(
   DESCRIPTOR = _PREDICTIONREQUEST,
   __module__ = 'service_pb2'
-  # @@protoc_insertion_point(class_scope:PredictionRequest)
+  # @@protoc_insertion_point(class_scope:endpoints.harambe_6.PredictionRequest)
   ))
 _sym_db.RegisterMessage(PredictionRequest)
 
 PredictionReply = _reflection.GeneratedProtocolMessageType('PredictionReply', (_message.Message,), dict(
   DESCRIPTOR = _PREDICTIONREPLY,
   __module__ = 'service_pb2'
-  # @@protoc_insertion_point(class_scope:PredictionReply)
+  # @@protoc_insertion_point(class_scope:endpoints.harambe_6.PredictionReply)
   ))
 _sym_db.RegisterMessage(PredictionReply)
 
@@ -122,16 +136,16 @@ _sym_db.RegisterMessage(PredictionReply)
 
 _PREDICTOR = _descriptor.ServiceDescriptor(
   name='Predictor',
-  full_name='Predictor',
+  full_name='endpoints.harambe_6.Predictor',
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=128,
-  serialized_end=190,
+  serialized_start=199,
+  serialized_end=301,
   methods=[
   _descriptor.MethodDescriptor(
     name='Predict',
-    full_name='Predictor.Predict',
+    full_name='endpoints.harambe_6.Predictor.Predict',
     index=0,
     containing_service=None,
     input_type=_PREDICTIONREQUEST,
