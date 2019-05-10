@@ -7,7 +7,7 @@ from google.cloud import kms_v1
 # NOTE: resolve name with environment
 # NOTE: may move name to config file
 BUCKET_NAME="harambe-6-dev"
-DEFAULTS_FILE="defaults.json"
+DEFAULTS_FILE="local.json"
 SECRETS_FILE="secrets.json"
 ENCRYPTED_SECRETS_FILE="secrets.json.encrypted"
 
