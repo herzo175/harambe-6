@@ -1,10 +1,9 @@
 import os
 import json
+import logging
 
 from google.cloud import storage
 from google.cloud import kms_v1
-
-import logging
 
 # NOTE: resolve name with environment
 # NOTE: may move name to config file
