@@ -18,11 +18,14 @@ STATIC_CONFIG={}
 
 def update_config(config_file):
     global STATIC_CONFIG
-    conf = load_json_config(config_file)
+    try:
+        conf = load_json_config(config_file)
 
-    for key in conf:
-        STATIC_CONFIG[key] = conf[key]
-
+        for key in conf:
+            STATIC_CONFIG[key] = conf[key]
+            
+    except FileNotFoundError as e:
+        logging.warn(f"Config file not found for environment: {ENVIRON}")
 
 def update_encrypted_config(secrets_file=SECRETS_FILE, encrypted_secrets_file=ENCRYPTED_SECRETS_FILE):
     # load secrets file
@@ -43,12 +46,9 @@ def get_config_key(key):
         if key not in STATIC_CONFIG:
             update_config(DEFAULTS_FILE)
 
-        try:
-            # look in environ config
-            if key not in STATIC_CONFIG:
-                update_config(f"{ENVIRON}.json")
-        except FileNotFoundError as e:
-            logging.warn(f"Config file not found for environment: {ENVIRON}")
+        # look in environ config
+        if key not in STATIC_CONFIG:
+            update_config(f"{ENVIRON}.json")
 
         # look in encrypted
         if key not in STATIC_CONFIG:
