@@ -11,7 +11,7 @@ from keras.models import Sequential
 import config
 
 
-def get_time_series_daily(symbol, filters=[], outputsize="", apikey=config.get_alphavantage_api_key()):
+def get_time_series_daily(symbol, filters=[], outputsize="", apikey=config.get_config_key("ALPHAVANTAGE_API_KEY")):
     return get_alphavantage(
         "TIME_SERIES_DAILY",
         "Time Series (Daily)",
@@ -29,7 +29,7 @@ def get_vwap(symbol, interval="15min"):
     )
 
 
-def get_alphavantage(function, rootkey, attributes=[], filters=[], apikey=config.get_alphavantage_api_key()):
+def get_alphavantage(function, rootkey, attributes=[], filters=[], apikey=config.get_config_key("ALPHAVANTAGE_API_KEY")):
     url = f"https://www.alphavantage.co/query?function={function}&{'&'.join(attributes)}&apikey={apikey}"
     data = requests.get(url).json()
 

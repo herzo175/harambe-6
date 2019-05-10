@@ -10,8 +10,8 @@ CREDENTIALS_FILE=harambe-6-account.json
 SECRETS_FILE=secrets.json
 SECRETS_FILE_ENCRYPTED=secrets.json.encrypted
 
-# gcloud config set project harambe-6
-# gcloud projects add-iam-policy-binding harambe-6 --member serviceAccount:... --role roles/cloudkms.cryptoKeyDecrypter
+set-project:
+	gcloud config set project $(NAME)
 
 proto_compile:
 	python3 -m grpc_tools.protoc -I . \
@@ -24,7 +24,7 @@ build:
 	docker build -t gcr.io/$(PROJECT_ID)/$(NAME):$(GIT_TAG) --build-arg CONTAINER_PORT=$(CONTAINER_PORT) .
 
 run:
-	docker run --rm -d --name $(NAME) \
+	docker run -d --rm --name $(NAME) \
 		--env GOOGLE_APPLICATION_CREDENTIALS=$(CREDENTIALS_FILE) \
 		-v $(shell pwd)/$(CREDENTIALS_FILE):/app/$(CREDENTIALS_FILE) \
 		-p $(HOST_PORT):$(CONTAINER_PORT) \
@@ -37,8 +37,11 @@ deploy:
 	# kubectl get service
 	# gcloud app deploy --version $(GIT_TAG)
 	# gcloud endpoints services deploy api_descriptor.pb api_config.yaml # NOTE: re-enable for grpc when endpoints is available on cloud run
-	gcloud beta run deploy --image gcr.io/$(PROJECT_ID)/$(NAME):$(GIT_TAG) --memory 512Mi
+	gcloud beta run deploy --image gcr.io/$(PROJECT_ID)/$(NAME):$(GIT_TAG) \
+		--memory 1Gi
+		--concurrency 2
 
+# gcloud projects add-iam-policy-binding harambe-6 --member serviceAccount:... --role roles/cloudkms.cryptoKeyDecrypter
 upload_secrets:
 	gcloud kms encrypt \
 		--location global \

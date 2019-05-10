@@ -7,10 +7,19 @@ from google.cloud import kms_v1
 # NOTE: resolve name with environment
 # NOTE: may move name to config file
 BUCKET_NAME="harambe-6-dev"
+DEFAULTS_FILE="defaults.json"
 SECRETS_FILE="secrets.json"
 ENCRYPTED_SECRETS_FILE="secrets.json.encrypted"
 
 STATIC_CONFIG={}
+
+
+def update_config(config_file):
+    global STATIC_CONFIG
+    conf = load_json_config(config_file)
+
+    for key in conf:
+        STATIC_CONFIG[key] = conf[key]
 
 
 def update_encrypted_config(secrets_file=SECRETS_FILE, encrypted_secrets_file=ENCRYPTED_SECRETS_FILE):
@@ -19,20 +28,29 @@ def update_encrypted_config(secrets_file=SECRETS_FILE, encrypted_secrets_file=EN
     # decrypt secrets file
     decrypt_secrets_file(encrypted_secrets_file, secrets_file)
     # load secrets into static config
-    conf = load_json_config(secrets_file)
-
-    for key in conf:
-        STATIC_CONFIG[key] = conf[key]
+    update_config(secrets_file)
 
 
-def get_alphavantage_api_key():
+def get_config_key(key):
     global STATIC_CONFIG
-    alphavantage_api_key_id = "ALPHAVANTAGE_API_KEY" 
 
-    if alphavantage_api_key_id not in STATIC_CONFIG:
-        update_encrypted_config()
+    if key in STATIC_CONFIG:
+        return STATIC_CONFIG[key]
+    else:
+        # load defaults
+        if key not in STATIC_CONFIG:
+            update_config(DEFAULTS_FILE)
 
-    return STATIC_CONFIG[alphavantage_api_key_id]
+        # look in environ config
+        if key not in STATIC_CONFIG:
+            update_config(f"{os.getenv('ENVIRON')}.json")
+
+        # look in encrypted
+        if key not in STATIC_CONFIG:
+            update_encrypted_config()
+
+        # Key error if not in config
+        return STATIC_CONFIG[key]
 
 
 def download_config_file(filename):
@@ -50,6 +68,7 @@ def decrypt_secrets_file(input_filename, output_filename):
         client = kms_v1.KeyManagementServiceClient()
         name = client.crypto_key_path_path(
             "harambe-6", "global", "harambe-6-dev", "harambe-6-dev-key")
+        print(name)
         # Use the KMS API to decrypt the data.
         response = client.decrypt(name, ciphertext)
 
