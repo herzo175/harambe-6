@@ -4,12 +4,15 @@ import json
 from google.cloud import storage
 from google.cloud import kms_v1
 
+import logging
+
 # NOTE: resolve name with environment
 # NOTE: may move name to config file
 BUCKET_NAME="harambe-6-dev"
-DEFAULTS_FILE="local.json"
+DEFAULTS_FILE="defaults.json"
 SECRETS_FILE="secrets.json"
 ENCRYPTED_SECRETS_FILE="secrets.json.encrypted"
+ENVIRON = os.getenv('ENVIRON', None);
 
 STATIC_CONFIG={}
 
@@ -41,9 +44,12 @@ def get_config_key(key):
         if key not in STATIC_CONFIG:
             update_config(DEFAULTS_FILE)
 
-        # look in environ config
-        if key not in STATIC_CONFIG:
-            update_config(f"{os.getenv('ENVIRON')}.json")
+        try:
+            # look in environ config
+            if key not in STATIC_CONFIG:
+                update_config(f"{ENVIRON}.json")
+        except FileNotFoundError as e:
+            logging.warn(f"Config file not found for environment: {ENVIRON}")
 
         # look in encrypted
         if key not in STATIC_CONFIG:
