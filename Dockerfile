@@ -17,5 +17,5 @@ ADD . .
 
 EXPOSE ${CONTAINER_PORT}
 
-# ENTRYPOINT $(echo python service.py $PORT)
-ENTRYPOINT $(echo python server.py $PORT)
+ENTRYPOINT $(echo python service.py $PORT)
+# ENTRYPOINT $(echo python server.py $PORT)

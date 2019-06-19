@@ -18,7 +18,9 @@ def predict(symbol, trend_length=None, trend_start_date=None, trend_end_date=Non
     # NOTE: configurable filters?
     times = lstm.get_time_series_daily(symbol, filters=["1. open"], outputsize="full")
 
-    if trend_start_date is not None and trend_end_date is not None:
+    # TODO: load model if there is one within 5% of the time range
+
+    if not not trend_start_date and not not trend_end_date:
         print("has trend start and end dates")
         trend_length = get_time_diff_days(trend_start_date, trend_end_date)
         end_datetime = convert_date_string(trend_end_date)

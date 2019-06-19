@@ -11,7 +11,7 @@ BUCKET_NAME="harambe-6-dev"
 DEFAULTS_FILE="defaults.json"
 SECRETS_FILE="secrets.json"
 ENCRYPTED_SECRETS_FILE="secrets.json.encrypted"
-ENVIRON = os.getenv('ENVIRON', None);
+ENVIRON=os.getenv('ENVIRON', None)
 
 STATIC_CONFIG={}
 

@@ -1,0 +1,100 @@
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: harambe-6
+#   annotations:
+#     kubernetes.io/ingress.global-static-ip-name: harambe-6
+# spec:
+#   backend:
+#     serviceName: harambe-6-svc
+#     servicePort: 80
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: harambe-6-svc
+#   labels:
+#     app: harambe-6
+# spec:
+#   type: NodePort
+#   selector:
+#     app: harambe-6
+#     # tier: web
+#   ports:
+#   - port: 80
+#     targetPort: 50051
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harambe-6
+spec:
+  ports:
+    - port: 80
+      targetPort: 50051
+      protocol: TCP
+      name: http2
+  selector:
+    app: harambe-6
+  type: LoadBalancer
+  loadBalancerIP: "34.66.26.80"
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: harambe-6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: harambe-6
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: harambe-6
+    spec:
+      containers:
+      - name: esp
+        image: gcr.io/endpoints-release/endpoints-runtime:1
+        args: [
+          "--http2_port=50051",
+          "--service=harambe-6.endpoints.harambe-6.cloud.goog",
+          "--rollout_strategy=managed",
+          "--backend=grpc://127.0.0.1:8080"
+        ]
+        ports:
+          - containerPort: 50051
+      - image: gcr.io/harambe-6/harambe-6:latest
+        imagePullPolicy: Always
+        name: harambe-6
+        # env:
+        # resources:
+        #   limits:
+        #     memory: 512Mi
+        #     cpu: 500m
+        ports:
+        - containerPort: 8080
+          name: harambe-6
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: harambe-6
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: harambe-6
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageValue: 1000Mi

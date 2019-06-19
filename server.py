@@ -10,6 +10,11 @@ import lstm
 server = Flask(__name__)
 
 
+@server.route("/", methods=["GET"])
+def happy():
+    return "happy"
+
+
 @server.route("/predict", methods=["POST"])
 def predict():
     body = request.get_json(force=True)
@@ -17,6 +22,7 @@ def predict():
     print(f"body: {body}")
 
     symbol = body["symbol"]
+    # TODO: derive trend_start_date and trend_end_date from current date
     trend_length = body.get("trend_length")
     trend_start_date = body.get("trend_start_date")
     trend_end_date = body.get("trend_end_date")
