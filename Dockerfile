@@ -7,15 +7,12 @@ WORKDIR /app
 
 RUN pip install --upgrade pip setuptools
 
-ADD ml_requirements.txt .
-RUN pip install -r ml_requirements.txt
+ADD requirements requirements
+RUN pip install -r requirements/ml_requirements.txt
+RUN pip install -r requirements/requirements.txt
 
-ADD requirements.txt .
-RUN pip install -r requirements.txt
-
-ADD . .
+ADD src .
 
 EXPOSE ${CONTAINER_PORT}
 
 ENTRYPOINT $(echo python service.py $PORT)
-# ENTRYPOINT $(echo python server.py $PORT)

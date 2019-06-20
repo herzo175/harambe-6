@@ -8,7 +8,7 @@ from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 
-import config
+from config import config
 
 
 def get_time_series_daily(symbol, filters=[], outputsize="", apikey=config.get_config_key("ALPHAVANTAGE_API_KEY")):

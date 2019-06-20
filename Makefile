@@ -9,17 +9,16 @@ BUCKET=harambe-6-dev
 CREDENTIALS_FILE=harambe-6-account.json
 SECRETS_FILE=secrets.json
 SECRETS_FILE_ENCRYPTED=secrets.json.encrypted
-CLIENT_MODE?=grpc
 
 set-project:
 	gcloud config set project $(NAME)
 
 proto_compile:
-	python3 -m grpc_tools.protoc -I . \
-		--python_out=. \
-		--grpc_python_out=. \
-		--descriptor_set_out=api_descriptor.pb \
-		service.proto
+	python3 -m grpc_tools.protoc -I src/api \
+		--python_out=src/api \
+		--grpc_python_out=src/api \
+		--descriptor_set_out=src/api/api_descriptor.pb \
+		src/api/service.proto
 
 build:
 	docker build -t gcr.io/$(PROJECT_ID)/$(NAME):$(GIT_TAG) -t gcr.io/$(PROJECT_ID)/$(NAME):latest --build-arg CONTAINER_PORT=$(CONTAINER_PORT) .
@@ -32,7 +31,7 @@ run:
 		gcr.io/$(PROJECT_ID)/$(NAME):$(GIT_TAG)
 
 run-client:
-	python3 client.py $(CLIENT_MODE)
+	python3 src/client.py
 
 # NOTE: cluster requires "cloud-platform" scope
 

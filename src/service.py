@@ -6,10 +6,10 @@ import logging
 import sys
 import os
 
-import service_pb2
-import service_pb2_grpc
-import lstm
 import app
+from predictor import lstm
+from api import service_pb2
+from api import service_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 

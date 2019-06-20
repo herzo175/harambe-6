@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import lstm
+from predictor import lstm
 
 
 def convert_date_string(date_string):
