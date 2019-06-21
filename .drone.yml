@@ -11,21 +11,25 @@ steps:
   #       - ${DRONE_COMMIT_SHA}
   #     json_key:
   #       from_secret: GCLOUD_CREDENTIALS
-  - name: deploy
-    image: vallard/drone-kube
-    settings:
-      template: deployment.yml
-    environment:
-      KUBE_TOKEN:
-        from_secret: KUBE_TOKEN
-      KUBE_CA:
-        from_secret: KUBE_CA
-      KUBE_SERVER:
-        from_secret: KUBE_SERVER
   # - name: deploy
-  #   image: viant/drone-gcloud
+  #   image: vallard/drone-kube
   #   settings:
-  #     gke_base64_key:
-  #       from_secret: GCLOUD_CREDENTIALS
-  #     script:
-  #       - gcloud components install kubectl
+  #     template: deployment.yml
+  #   environment:
+  #     KUBE_TOKEN:
+  #       from_secret: KUBE_TOKEN
+  #     KUBE_CA:
+  #       from_secret: KUBE_CA
+  #     KUBE_SERVER:
+  #       from_secret: KUBE_SERVER
+  - name: deploy
+    image: sinlead/drone-kubectl
+    settings:
+      kubernetes_token:
+        from_secret: KUBE_TOKEN
+      kubernetes_cert:
+        from_secret: KUBE_CA
+      kubernetes_server:
+        from_secret: KUBE_SERVER
+    command:
+      - kubectl apply -f deployment.yml
