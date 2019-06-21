@@ -11,6 +11,11 @@ steps:
         - ${DRONE_COMMIT_SHA}
       json_key:
         from_secret: GCLOUD_CREDENTIALS
+  - name: replace-deployment-text
+    image: jeremyaherzog/drone-text-replacement
+    settings:
+      filename: deployment.yml
+      version: ${DRONE_COMMIT_SHA}
   - name: deploy
     image: sinlead/drone-kubectl
     settings:

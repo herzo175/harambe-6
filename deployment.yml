@@ -66,7 +66,7 @@ spec:
         ]
         ports:
           - containerPort: 50051
-      - image: gcr.io/harambe-6/harambe-6:latest
+      - image: gcr.io/harambe-6/harambe-6:{{VERSION}}
         imagePullPolicy: Always
         name: harambe-6
         # env:
