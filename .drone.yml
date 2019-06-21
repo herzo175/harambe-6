@@ -1,0 +1,13 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: build
+    image: plugins/gcr
+    settings:
+      repo: gcr.io/harambe-6/harambe-6
+      tags:
+        - latest
+        - ${DRONE_COMMIT_SHA}
+      json_key:
+        from_secret: GCLOUD_CREDENTIALS
