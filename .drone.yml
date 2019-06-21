@@ -32,4 +32,4 @@ steps:
       kubernetes_server:
         from_secret: KUBE_SERVER
     command:
-      - kubectl apply -f deployment.yml
+      - apply -f deployment.yml
