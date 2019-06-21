@@ -2,20 +2,23 @@ kind: pipeline
 name: default
 
 steps:
-  - name: build
-    image: plugins/gcr
-    settings:
-      repo: gcr.io/harambe-6/harambe-6
-      tags:
-        - latest
-        - ${DRONE_COMMIT_SHA}
-      json_key:
-        from_secret: GCLOUD_CREDENTIALS
+  # - name: build
+  #   image: plugins/gcr
+  #   settings:
+  #     repo: gcr.io/harambe-6/harambe-6
+  #     tags:
+  #       - latest
+  #       - ${DRONE_COMMIT_SHA}
+  #     json_key:
+  #       from_secret: GCLOUD_CREDENTIALS
   - name: deploy
-    image: viant/drone-gcloud
+    image: vallard/drone-kube
     settings:
-      gke_base64_key:
-        from_secret: GCLOUD_CREDENTIALS
-      script:
-        - gcloud components install kubectl
-        - kubectl version
+      template: deployment.yml
+  # - name: deploy
+  #   image: viant/drone-gcloud
+  #   settings:
+  #     gke_base64_key:
+  #       from_secret: GCLOUD_CREDENTIALS
+  #     script:
+  #       - gcloud components install kubectl
