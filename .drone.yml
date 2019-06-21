@@ -15,6 +15,13 @@ steps:
     image: vallard/drone-kube
     settings:
       template: deployment.yml
+    environment:
+      KUBE_TOKEN:
+        from_secret: KUBE_TOKEN
+      KUBE_CA:
+        from_secret: KUBE_CA
+      KUBE_SERVER:
+        from_secret: KUBE_SERVER
   # - name: deploy
   #   image: viant/drone-gcloud
   #   settings:
