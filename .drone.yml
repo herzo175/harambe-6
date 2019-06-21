@@ -11,3 +11,11 @@ steps:
         - ${DRONE_COMMIT_SHA}
       json_key:
         from_secret: GCLOUD_CREDENTIALS
+  - name: deploy
+    image: viant/drone-gcloud
+    settings:
+      gke_base64_key:
+        from_secret: GCLOUD_CREDENTIALS
+      script:
+        - gcloud components install kubectl
+        - kubectl version
