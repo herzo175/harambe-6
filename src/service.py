@@ -34,6 +34,23 @@ class Predictor(service_pb2_grpc.PredictorServicer):
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             return service_pb2.PredictionReply()
 
+    def Backtest(self, request, context):
+        symbol = request.symbol
+        trend_length = request.trend_length
+        prediction_start_date = request.prediction_start_date
+        prediction_end_date = request.prediction_end_date
+
+        percent_change = app.backtest(
+            symbol, prediction_start_date, prediction_end_date, trend_length
+        )
+
+        try:
+            return service_pb2.BacktestReply(percent_change=percent_change)
+        except AssertionError as e:
+            context.set_details(str(e))
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            return service_pb2.PredictionReply()
+
 
 def serve(port):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

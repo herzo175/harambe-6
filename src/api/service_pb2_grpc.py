@@ -19,6 +19,11 @@ class PredictorStub(object):
         request_serializer=service__pb2.PredictionRequest.SerializeToString,
         response_deserializer=service__pb2.PredictionReply.FromString,
         )
+    self.Backtest = channel.unary_unary(
+        '/endpoints.harambe_6.Predictor/Backtest',
+        request_serializer=service__pb2.BacktestRequest.SerializeToString,
+        response_deserializer=service__pb2.BacktestReply.FromString,
+        )
 
 
 class PredictorServicer(object):
@@ -26,8 +31,15 @@ class PredictorServicer(object):
   pass
 
   def Predict(self, request, context):
-    """Sends a greeting
+    """Sends a prediction request
     """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def Backtest(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
@@ -39,6 +51,11 @@ def add_PredictorServicer_to_server(servicer, server):
           servicer.Predict,
           request_deserializer=service__pb2.PredictionRequest.FromString,
           response_serializer=service__pb2.PredictionReply.SerializeToString,
+      ),
+      'Backtest': grpc.unary_unary_rpc_method_handler(
+          servicer.Backtest,
+          request_deserializer=service__pb2.BacktestRequest.FromString,
+          response_serializer=service__pb2.BacktestReply.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

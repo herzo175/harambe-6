@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='endpoints.harambe_6',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\rservice.proto\x12\x13\x65ndpoints.harambe_6\"k\n\x11PredictionRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x14\n\x0ctrend_length\x18\x02 \x01(\x05\x12\x18\n\x10trend_start_date\x18\x03 \x01(\t\x12\x16\n\x0etrend_end_date\x18\x04 \x01(\t\"2\n\x0fPredictionReply\x12\x0b\n\x03val\x18\x01 \x01(\x01\x12\x12\n\nval_denorm\x18\x02 \x01(\x01\x32\x66\n\tPredictor\x12Y\n\x07Predict\x12&.endpoints.harambe_6.PredictionRequest\x1a$.endpoints.harambe_6.PredictionReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\rservice.proto\x12\x13\x65ndpoints.harambe_6\"k\n\x11PredictionRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x14\n\x0ctrend_length\x18\x02 \x01(\x05\x12\x18\n\x10trend_start_date\x18\x03 \x01(\t\x12\x16\n\x0etrend_end_date\x18\x04 \x01(\t\"2\n\x0fPredictionReply\x12\x0b\n\x03val\x18\x01 \x01(\x01\x12\x12\n\nval_denorm\x18\x02 \x01(\x01\"s\n\x0f\x42\x61\x63ktestRequest\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x14\n\x0ctrend_length\x18\x02 \x01(\x05\x12\x1d\n\x15prediction_start_date\x18\x03 \x01(\t\x12\x1b\n\x13prediction_end_date\x18\x04 \x01(\t\"\'\n\rBacktestReply\x12\x16\n\x0epercent_change\x18\x01 \x01(\x02\x32\xbe\x01\n\tPredictor\x12Y\n\x07Predict\x12&.endpoints.harambe_6.PredictionRequest\x1a$.endpoints.harambe_6.PredictionReply\"\x00\x12V\n\x08\x42\x61\x63ktest\x12$.endpoints.harambe_6.BacktestRequest\x1a\".endpoints.harambe_6.BacktestReply\"\x00\x62\x06proto3')
 )
 
 
@@ -114,8 +114,93 @@ _PREDICTIONREPLY = _descriptor.Descriptor(
   serialized_end=197,
 )
 
+
+_BACKTESTREQUEST = _descriptor.Descriptor(
+  name='BacktestRequest',
+  full_name='endpoints.harambe_6.BacktestRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='symbol', full_name='endpoints.harambe_6.BacktestRequest.symbol', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='trend_length', full_name='endpoints.harambe_6.BacktestRequest.trend_length', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='prediction_start_date', full_name='endpoints.harambe_6.BacktestRequest.prediction_start_date', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='prediction_end_date', full_name='endpoints.harambe_6.BacktestRequest.prediction_end_date', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=199,
+  serialized_end=314,
+)
+
+
+_BACKTESTREPLY = _descriptor.Descriptor(
+  name='BacktestReply',
+  full_name='endpoints.harambe_6.BacktestReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='percent_change', full_name='endpoints.harambe_6.BacktestReply.percent_change', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=316,
+  serialized_end=355,
+)
+
 DESCRIPTOR.message_types_by_name['PredictionRequest'] = _PREDICTIONREQUEST
 DESCRIPTOR.message_types_by_name['PredictionReply'] = _PREDICTIONREPLY
+DESCRIPTOR.message_types_by_name['BacktestRequest'] = _BACKTESTREQUEST
+DESCRIPTOR.message_types_by_name['BacktestReply'] = _BACKTESTREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 PredictionRequest = _reflection.GeneratedProtocolMessageType('PredictionRequest', (_message.Message,), dict(
@@ -132,6 +217,20 @@ PredictionReply = _reflection.GeneratedProtocolMessageType('PredictionReply', (_
   ))
 _sym_db.RegisterMessage(PredictionReply)
 
+BacktestRequest = _reflection.GeneratedProtocolMessageType('BacktestRequest', (_message.Message,), dict(
+  DESCRIPTOR = _BACKTESTREQUEST,
+  __module__ = 'service_pb2'
+  # @@protoc_insertion_point(class_scope:endpoints.harambe_6.BacktestRequest)
+  ))
+_sym_db.RegisterMessage(BacktestRequest)
+
+BacktestReply = _reflection.GeneratedProtocolMessageType('BacktestReply', (_message.Message,), dict(
+  DESCRIPTOR = _BACKTESTREPLY,
+  __module__ = 'service_pb2'
+  # @@protoc_insertion_point(class_scope:endpoints.harambe_6.BacktestReply)
+  ))
+_sym_db.RegisterMessage(BacktestReply)
+
 
 
 _PREDICTOR = _descriptor.ServiceDescriptor(
@@ -140,8 +239,8 @@ _PREDICTOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=199,
-  serialized_end=301,
+  serialized_start=358,
+  serialized_end=548,
   methods=[
   _descriptor.MethodDescriptor(
     name='Predict',
@@ -150,6 +249,15 @@ _PREDICTOR = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_PREDICTIONREQUEST,
     output_type=_PREDICTIONREPLY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Backtest',
+    full_name='endpoints.harambe_6.Predictor.Backtest',
+    index=1,
+    containing_service=None,
+    input_type=_BACKTESTREQUEST,
+    output_type=_BACKTESTREPLY,
     serialized_options=None,
   ),
 ])

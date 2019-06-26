@@ -1,6 +1,9 @@
 from datetime import datetime
+import numpy as np
 
-from predictor import lstm
+import backtrader
+
+from predictor import lstm, backtesting
 
 
 def convert_date_string(date_string):
@@ -46,3 +49,55 @@ def predict(symbol, trend_length=None, trend_start_date=None, trend_end_date=Non
     prediction_val_denorm = lstm.denormalize_dim(prediction_val, last_frame[0][0])
 
     return float(prediction_val), float(prediction_val_denorm)
+
+
+def backtest(symbol, start_date, end_date, trend_length):
+    start = convert_date_string(start_date)
+    end = convert_date_string(end_date)
+
+    days_between = np.busday_count(start.date(), end.date())
+
+    assert (days_between >= trend_length), "Number of business days between start and end must be >= trend length"
+
+    times = lstm.get_time_series_daily(symbol, ["1. open"], outputsize="full")
+    training_times, testing_times = lstm.split_times(times, start_date)
+
+    training_vectors = lstm.times_to_vectors(training_times, include_time=False)[::-1]
+    testing_vectors = lstm.times_to_vectors(testing_times, include_time=True)[::-1]
+
+    training_frames = lstm.get_frames(training_vectors, trend_length, with_target=True)
+    testing_frames = lstm.get_frames(testing_vectors, trend_length, with_target=False)
+
+    normalized_train = lstm.normalize_frames(training_frames)
+    x_train, y_train = lstm.seperate_xy(normalized_train)
+
+    model = lstm.setup_lstm_model(x_train, y_train)
+
+    print(model)
+
+    # setup inital testing strategy
+    cerebro = backtrader.Cerebro()
+    cerebro.broker.setcash(100000.0)
+    # cerebro.addsizer(Reverser)
+    cerebro.addsizer(backtesting.PercentIncrease)
+    cerebro.broker.setcommission(commission=0.001)
+
+    # add data and model to strategy
+    cerebro.addstrategy(backtesting.TestStrategy, model=model, trend_length=trend_length)
+
+    cerebro.adddata(
+        backtrader.feeds.YahooFinanceData(
+            dataname=symbol,
+            fromdate=start,
+            todate=end
+        )
+    )
+
+    starting_value = cerebro.broker.getvalue()
+    cerebro.run()
+    ending_value = cerebro.broker.getvalue()
+
+    percent_change = (ending_value - starting_value) / starting_value
+
+    print(f"percent change: {percent_change}")
+    return percent_change

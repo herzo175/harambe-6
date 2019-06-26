@@ -18,6 +18,9 @@ def run_grpc():
         response = stub.Predict(service_pb2.PredictionRequest(symbol="MSFT", trend_start_date="2019-03-10", trend_end_date="2019-03-15"))
         print(f"Client received: {response.val_denorm}")
 
+        response = stub.Backtest(service_pb2.BacktestRequest(symbol="MSFT", trend_length=15, prediction_start_date="2019-04-01", prediction_end_date="2019-05-20"))
+        print(f"backtest received: {response.percent_change}")
+
 
 if __name__ == '__main__':
     logging.basicConfig()

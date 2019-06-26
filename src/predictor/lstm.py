@@ -10,6 +10,9 @@ from keras.models import Sequential
 
 from config import config
 
+DATE_PATTERN="%Y-%m-%d"
+DATETIME_PATTERN="%Y-%m-%d %H:%M"
+
 
 def get_time_series_daily(symbol, filters=[], outputsize="", apikey=config.get_config_key("ALPHAVANTAGE_API_KEY")):
     return get_alphavantage(
@@ -41,15 +44,44 @@ def get_alphavantage(function, rootkey, attributes=[], filters=[], apikey=config
         return times
 
 
+def split_times(times, split_at):
+    if len(split_at) > 10:
+        return (
+            {
+                time: times[time]
+                for time in times
+                if datetime.strptime(time, DATETIME_PATTERN) < datetime.strptime(split_at, DATETIME_PATTERN)
+            },
+            {
+                time: times[time]
+                for time in times
+                if datetime.strptime(time, DATETIME_PATTERN) >= datetime.strptime(split_at, DATETIME_PATTERN)
+            }
+        )
+    else:
+        return (
+            {
+                time: times[time]
+                for time in times
+                if datetime.strptime(time, DATE_PATTERN) < datetime.strptime(split_at, DATE_PATTERN)
+            },
+            {
+                time: times[time]
+                for time in times
+                if datetime.strptime(time, DATE_PATTERN) >= datetime.strptime(split_at, DATE_PATTERN)
+            }
+        )
+
+
 def times_to_vectors(times, include_time=False):
     def get_col(time, col):
         val = times[time][col]
 
         if include_time:
             if len(time) > 10:
-                ptime = datetime.strptime(time, "%Y-%m-%d %H:%M")
+                ptime = datetime.strptime(time, DATETIME_PATTERN)
             else:
-                ptime = datetime.strptime(time, "%Y-%m-%d")
+                ptime = datetime.strptime(time, DATE_PATTERN)
 
             return (ptime, val)
         else:
