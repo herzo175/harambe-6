@@ -20,3 +20,5 @@ usage:
   rules:
   - selector: endpoints.harambe_6.Predictor.Predict
     allow_unregistered_calls: true
+  - selector: endpoints.harambe_6.Predictor.Backtest
+  allow_unregistered_calls: true
