@@ -60,13 +60,10 @@ def backtest(symbol, start_date, end_date, trend_length):
     assert (days_between >= trend_length), "Number of business days between start and end must be >= trend length"
 
     times = lstm.get_time_series_daily(symbol, ["1. open"], outputsize="full")
-    training_times, testing_times = lstm.split_times(times, start_date)
+    training_times, _ = lstm.split_times(times, start_date)
 
     training_vectors = lstm.times_to_vectors(training_times, include_time=False)[::-1]
-    testing_vectors = lstm.times_to_vectors(testing_times, include_time=True)[::-1]
-
     training_frames = lstm.get_frames(training_vectors, trend_length, with_target=True)
-    testing_frames = lstm.get_frames(testing_vectors, trend_length, with_target=False)
 
     normalized_train = lstm.normalize_frames(training_frames)
     x_train, y_train = lstm.seperate_xy(normalized_train)
