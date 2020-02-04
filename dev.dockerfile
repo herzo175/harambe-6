@@ -1,18 +1,15 @@
+FROM node:13.2-buster-slim
+
 FROM python:3.6-slim-buster
 
-ARG CONTAINER_PORT=8080
-ENV PORT=${CONTAINER_PORT}
+WORKDIR /workspace
 
-WORKDIR /app
+RUN apt-get update
+RUN apt-get install docker.io -y
+RUN apt-get install build-essential -y
 
 RUN pip install --upgrade pip setuptools
 
 ADD requirements requirements
 RUN pip install -r requirements/ml_requirements.txt
 RUN pip install -r requirements/requirements.txt
-
-ADD src .
-
-EXPOSE ${CONTAINER_PORT}
-
-ENTRYPOINT $(echo python service.py $PORT)

@@ -1,6 +1,7 @@
 requests>=2.18.4
-grpcio>=1.19.0
+grpcio==1.19.0
 google-cloud-storage
 google-cloud-kms
 flask
 backtrader
+iexfinance>=0.4.3

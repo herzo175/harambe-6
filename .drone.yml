@@ -3,27 +3,29 @@ name: default
 
 steps:
   - name: build
-    image: plugins/gcr
+    image: plugins/docker
     settings:
-      repo: gcr.io/harambe-6/harambe-6
+      username:
+        from_secret: DOCKER_USERNAME
+      password:
+        from_secret: DOCKER_PASSWORD
+      repo: jeremyaherzog/harambe-6
       tags:
         - latest
         - ${DRONE_COMMIT_SHA}
-      json_key:
-        from_secret: GCLOUD_CREDENTIALS
-  - name: replace-deployment-text
-    image: jeremyaherzog/drone-text-replacement
-    settings:
-      filename: deployment.yml
-      version: ${DRONE_COMMIT_SHA}
   - name: deploy
-    image: sinlead/drone-kubectl
-    settings:
-      kubernetes_token:
-        from_secret: KUBE_TOKEN
-      kubernetes_cert:
-        from_secret: KUBE_CA
-      kubernetes_server:
-        from_secret: KUBE_SERVER
-    command:
-      - apply -f deployment.yml
+    image: hashicorp/terraform
+    environment:
+      DO_TOKEN:  
+        from_secret: DO_TOKEN
+      IEX_KEY:  
+        from_secret: IEX_KEY
+      TF_STATE_ACCESS_KEY:
+        from_secret: TF_STATE_ACCESS_KEY
+      TF_STATE_SECRET_KEY:
+        from_secret: TF_STATE_SECRET_KEY
+    commands:
+      - apk add --update make
+      - printenv > .env
+      - make init
+      - printf 'yes' | make deploy GIT_TAG=$DRONE_COMMIT_SHA

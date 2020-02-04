@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np
 
 import backtrader
 
-from predictor import lstm, backtesting
+from predictor import lstm, backtesting, datasource
+
+TRAINING_LENGTH=180
 
 
 def convert_date_string(date_string):
@@ -18,25 +20,26 @@ def get_time_diff_days(start_date, end_date):
 
 
 def predict(symbol, trend_length=None, trend_start_date=None, trend_end_date=None):
-    # NOTE: configurable filters?
-    times = lstm.get_time_series_daily(symbol, filters=["1. open"], outputsize="full")
+    times = datasource.get_time_series_daily(
+        symbol=symbol,
+        start=(datetime.now() - timedelta(days=TRAINING_LENGTH)),
+        end=datetime.now()
+    )
 
     # TODO: load model if there is one within 5% of the time range
 
     if not not trend_start_date and not not trend_end_date:
         print("has trend start and end dates")
         trend_length = get_time_diff_days(trend_start_date, trend_end_date)
-        end_datetime = convert_date_string(trend_end_date)
-
-        times = {
-            time: times[time]
-            for time in times
-            if convert_date_string(time) <= end_datetime
-        }
+        times = datasource.get_time_series_daily(
+            symbol=symbol,
+            start=(convert_date_string(trend_start_date)- timedelta(days=TRAINING_LENGTH)),
+            end=convert_date_string(trend_end_date)
+        )
     elif trend_length is None or trend_length <= 0:
         raise ValueError("must specify trend_start_date and trend_end_date or trend_length > 0")
 
-    vectors = lstm.times_to_vectors(times)[::-1]
+    vectors = lstm.times_to_vectors(times)
     frames = lstm.get_frames(vectors, seq_len=trend_length, with_target=True)
 
     # TODO: cache predictions
@@ -48,6 +51,8 @@ def predict(symbol, trend_length=None, trend_start_date=None, trend_end_date=Non
     prediction_val = prediction[0][0]
     prediction_val_denorm = lstm.denormalize_dim(prediction_val, last_frame[0][0])
 
+    # assert False, f"last frame: {last_frame}, last frame norm: {[lstm.normalize_frame(last_frame)]}, prediction: {prediction}, prediction val denorm: {prediction_val_denorm}"
+
     return float(prediction_val), float(prediction_val_denorm)
 
 
@@ -55,11 +60,16 @@ def backtest(symbol, start_date, end_date, trend_length):
     start = convert_date_string(start_date)
     end = convert_date_string(end_date)
 
-    days_between = np.busday_count(start.date(), end.date())
+    days_between = abs(np.busday_count(start.date(), end.date()))
 
-    assert (days_between >= trend_length), "Number of business days between start and end must be >= trend length"
+    assert (days_between >= trend_length), f"Got {days_between} business days between dates, must be >= {trend_length}"
 
-    times = lstm.get_time_series_daily(symbol, ["1. open"], outputsize="full")
+    times = datasource.get_time_series_daily(
+        symbol=symbol,
+        start=(start - timedelta(days=180)),
+        end=end
+    )
+
     training_times, _ = lstm.split_times(times, start_date)
 
     training_vectors = lstm.times_to_vectors(training_times, include_time=False)[::-1]

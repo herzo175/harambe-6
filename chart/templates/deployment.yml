@@ -1,0 +1,19 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: default
+  labels:
+    serving.knative.dev/visibility: cluster-local
+spec:
+  template:
+    spec:
+      containers:
+        # TODO: DNS, HTTPS
+        - image: "jeremyaherzog/{{ .Chart.Name }}:{{ .Values.image.tag }}"
+          ports:
+            - name: h2c
+              containerPort: 8080
+          env:
+            - name: IEX_KEY
+              value: {{ .Values.secrets.iexKey }}

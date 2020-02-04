@@ -2,7 +2,6 @@ import time
 import random
 from datetime import datetime
 
-import requests
 import numpy as np
 from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM
@@ -12,36 +11,6 @@ from config import config
 
 DATE_PATTERN="%Y-%m-%d"
 DATETIME_PATTERN="%Y-%m-%d %H:%M"
-
-
-def get_time_series_daily(symbol, filters=[], outputsize="", apikey=config.get_config_key("ALPHAVANTAGE_API_KEY")):
-    return get_alphavantage(
-        "TIME_SERIES_DAILY",
-        "Time Series (Daily)",
-        attributes=[f"symbol={symbol}", f"outputsize={outputsize}"],
-        filters=filters,
-        apikey=apikey
-    )
-
-
-def get_vwap(symbol, interval="15min"):
-    return get_alphavantage(
-        "VWAP",
-        "Technical Analysis: VWAP",
-        attributes=[f"symbol={symbol}", f"interval={interval}"]
-    )
-
-
-def get_alphavantage(function, rootkey, attributes=[], filters=[], apikey=config.get_config_key("ALPHAVANTAGE_API_KEY")):
-    url = f"https://www.alphavantage.co/query?function={function}&{'&'.join(attributes)}&apikey={apikey}"
-    data = requests.get(url).json()
-
-    times = data[rootkey]
-
-    if filters != []:
-        return {time: {fil: times[time][fil] for fil in filters} for time in times}
-    else:
-        return times
 
 
 def split_times(times, split_at):
@@ -91,10 +60,13 @@ def times_to_vectors(times, include_time=False):
 
 
 def get_frames(vectors, seq_len, with_target=False):
+    # Add vectors to frames starting from the end to ensure last frame has all days
     return [
-        vectors[i:seq_len+i+(1 if with_target else 0)]
-        for i in range(len(vectors) - (seq_len+(1 if with_target else 0)))
-    ]
+        # vectors[seq_len+i+(1 if with_target else 0):-i]
+        # for i in range(len(vectors) - (seq_len+(1 if with_target else 0)))
+        vectors[i-seq_len-(1 if with_target else 0):i]
+        for i in range(len(vectors), seq_len, -1)
+    ][::-1]  # Make sure ordering is same as vectors
 
 
 def normalize_frames(frames):
