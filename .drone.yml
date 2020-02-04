@@ -13,6 +13,11 @@ steps:
       tags:
         - latest
         - ${DRONE_COMMIT_SHA}
+    when:
+      branch:
+      - master
+      event:
+      - push
   - name: deploy
     image: hashicorp/terraform
     environment:
@@ -29,3 +34,8 @@ steps:
       - printenv > .env
       - make init
       - printf 'yes' | make deploy GIT_TAG=$DRONE_COMMIT_SHA
+    when:
+      branch:
+      - master
+      event:
+      - push
