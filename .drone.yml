@@ -32,8 +32,8 @@ steps:
     commands:
       - apk add --update make
       - printenv > .env
-      - make init
-      - printf 'yes' | make deploy GIT_TAG=$DRONE_COMMIT_SHA
+      - make tf-init
+      - printf 'yes' | make tf-deploy GIT_TAG=$DRONE_COMMIT_SHA
     when:
       branch:
       - master
