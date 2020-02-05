@@ -44,33 +44,33 @@ provider "kubernetes" {
 }
 
 // TODO: move to shared IAC
-# resource "kubernetes_service_account" "tiller" {
-#   metadata {
-#     name      = "tiller"
-#     namespace = "kube-system"
-#   }
-# }
+resource "kubernetes_service_account" "tiller" {
+  metadata {
+    name      = "tiller"
+    namespace = "kube-system"
+  }
+}
 
-# resource "kubernetes_cluster_role_binding" "tiller" {
-#   metadata {
-#     name = "tiller"
-#   }
+resource "kubernetes_cluster_role_binding" "tiller" {
+  metadata {
+    name = "tiller"
+  }
 
-#   role_ref {
-#     api_group = "rbac.authorization.k8s.io"
-#     kind      = "ClusterRole"
-#     name      = "cluster-admin"
-#   }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
 
-#   # api_group has to be empty because of a bug:
-#   # https://github.com/terraform-providers/terraform-provider-kubernetes/issues/204
-#   subject {
-#     api_group = ""
-#     kind      = "ServiceAccount"
-#     name      = "tiller"
-#     namespace = "kube-system"
-#   }
-# }
+  # api_group has to be empty because of a bug:
+  # https://github.com/terraform-providers/terraform-provider-kubernetes/issues/204
+  subject {
+    api_group = ""
+    kind      = "ServiceAccount"
+    name      = "tiller"
+    namespace = "kube-system"
+  }
+}
 
 # resource "null_resource" "tiller" {
 #   depends_on = [
@@ -82,15 +82,12 @@ provider "kubernetes" {
 #   }
 
 #   provisioner "local-exec" {
-#     when = "destroy"
+#     when = destroy
 #     command= "kubectl patch deployment tiller-deploy -n kube-system -p '{\"spec\":{\"template\":{\"spec\":{\"serviceAccount\": \"default\", \"serviceAccountName\": \"default\"}}}}'"
 #   }
 # }
 
 provider "helm" {
-  service_account = "tiller"
-  namespace       = "kube-system"
-
   kubernetes {
     host  = data.digitalocean_kubernetes_cluster.harambe.endpoint
     token = data.digitalocean_kubernetes_cluster.harambe.kube_config[0].token
