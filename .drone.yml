@@ -33,6 +33,7 @@ steps:
       - apk add --update make
       - printenv > .env
       - make tf-init
+      - touch /root/.kube/config
       - printf 'yes' | make tf-deploy GIT_TAG=$DRONE_COMMIT_SHA
     when:
       branch:
