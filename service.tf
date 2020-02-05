@@ -89,8 +89,18 @@ resource "kubernetes_cluster_role_binding" "tiller" {
 
 provider "helm" {
   kubernetes {
-    host  = data.digitalocean_kubernetes_cluster.harambe.endpoint
-    token = data.digitalocean_kubernetes_cluster.harambe.kube_config[0].token
+    host     = data.digitalocean_kubernetes_cluster.harambe.endpoint
+    # username = "ClusterMaster"
+    # password = "MindTheGap"
+
+    client_certificate     = base64decode(
+      data.digitalocean_kubernetes_cluster.harambe.kube_config[0].client_certificate
+    )
+
+    client_key             = base64decode(
+      data.digitalocean_kubernetes_cluster.harambe.kube_config[0].client_key
+    )
+
     cluster_ca_certificate = base64decode(
       data.digitalocean_kubernetes_cluster.harambe.kube_config[0].cluster_ca_certificate
     )
