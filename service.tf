@@ -88,18 +88,15 @@ resource "kubernetes_cluster_role_binding" "tiller" {
 # }
 
 provider "helm" {
+  debug = true
+  alias = "harambe_dev_1"
+
   kubernetes {
+
+    load_config_file = false
+
     host  = data.digitalocean_kubernetes_cluster.harambe.endpoint
     token = data.digitalocean_kubernetes_cluster.harambe.kube_config[0].token
-
-    client_certificate     = base64decode(
-      data.digitalocean_kubernetes_cluster.harambe.kube_config[0].client_certificate
-    )
-
-    client_key             = base64decode(
-      data.digitalocean_kubernetes_cluster.harambe.kube_config[0].client_key
-    )
-
     cluster_ca_certificate = base64decode(
       data.digitalocean_kubernetes_cluster.harambe.kube_config[0].cluster_ca_certificate
     )
@@ -107,6 +104,7 @@ provider "helm" {
 }
 
 resource "helm_release" "harambe-6" {
+  provider   = helm.harambe_dev_1
   name       = "harambe-6"
   chart      = "${path.module}/chart"
 

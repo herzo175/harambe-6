@@ -73,7 +73,7 @@ class TestStrategy(backtrader.Strategy):
         
         pred_diff = current_prediction[0][0] - previous_prediction[0][0]
         share_price = current_frame[-1][0]
-        
+
         if not self.position:
             # can only hold, buy, or short
             if pred_diff > 0:
