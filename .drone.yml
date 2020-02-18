@@ -2,22 +2,22 @@ kind: pipeline
 name: default
 
 steps:
-  # - name: build
-  #   image: plugins/docker
-  #   settings:
-  #     username:
-  #       from_secret: DOCKER_USERNAME
-  #     password:
-  #       from_secret: DOCKER_PASSWORD
-  #     repo: jeremyaherzog/harambe-6
-  #     tags:
-  #       - latest
-  #       - ${DRONE_COMMIT_SHA}
-  #   when:
-  #     branch:
-  #     - master
-  #     event:
-  #     - push
+  - name: build
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DOCKER_USERNAME
+      password:
+        from_secret: DOCKER_PASSWORD
+      repo: jeremyaherzog/harambe-6
+      tags:
+        - latest
+        - ${DRONE_COMMIT_SHA}
+    when:
+      branch:
+      - master
+      event:
+      - push
   - name: deploy
     image: hashicorp/terraform
     environment:
